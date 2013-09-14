@@ -115,4 +115,6 @@ body {
 }
 .corridors select {
 	margin: 10px 0;
+	width: 100%;
+	font-size: 18px;
 }
