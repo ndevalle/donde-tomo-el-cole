@@ -195,14 +195,13 @@ function deleteAllMarkers() {
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 function calcRoute(a,b) {
-  var selectedMode = document.getElementById('mode').value;
   var request = {
       origin: a,
       destination: b,
       // Note that Javascript allows us to access the constant
       // using square brackets and a string value as its
       // "property."
-      travelMode: google.maps.TravelMode[selectedMode]
+      travelMode: 'walking'
   };
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
