@@ -90,13 +90,17 @@
                 //document.getElementById("mapholder").innerHTML="<img src='"+img_url+"'>";
             }
 
-            $(function(){
+            function showError(error) {
 
-                getLocation();
+                alert(error);
             }
 
-        </script>
+            $(document).ready(function() {
 
+                getLocation();
+            });
+
+        </script>
 
     </body>
 </html>
