@@ -201,7 +201,7 @@ function calcRoute(a,b) {
       // Note that Javascript allows us to access the constant
       // using square brackets and a string value as its
       // "property."
-      travelMode: 'walking'
+      travelMode: google.maps.TravelMode.WALKING
   };
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
