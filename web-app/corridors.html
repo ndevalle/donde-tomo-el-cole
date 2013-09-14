@@ -47,7 +47,7 @@
         <main>
             <section class="where">
                 <p>Estás en:</p>
-                <h1>Bvar Tobar Garcia y Calle 8</h1>
+                <h1 id="coordinates"></h1>
             </section>
 
             <section class="corridors">
@@ -69,5 +69,41 @@
                 </form>
             </section>
         </main>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+        <script>
+
+            $(function(){
+
+                getLocation();
+            }
+
+            function getLocation() {
+
+                if (navigator.geolocation) {
+
+                    navigator.geolocation.getCurrentPosition(showPosition,showError);
+                }
+                else {
+
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+
+            function showPosition(position) {
+
+                var latlon = "lat:"+position.coords.latitude+" - long:"+position.coords.longitude;
+
+                $("#coordinates").val(latlon);
+
+                //var img_url="http://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false";
+
+                //document.getElementById("mapholder").innerHTML="<img src='"+img_url+"'>";
+            }
+
+        </script>
+
+
     </body>
 </html>
