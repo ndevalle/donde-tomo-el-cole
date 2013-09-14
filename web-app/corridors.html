@@ -11,8 +11,14 @@
         <meta name="author" content=""/>
         <meta name="description" content=""/>
 
-
-        <title>¿Dónde tomo el cole?</title>
+<style>
+      html, body, #map_canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+    </style>
+        <title>Dónde tomo el cole</title>
 
         <!-- Responsiveness -->
         <meta name="HandheldFriendly" content="True" />
@@ -35,35 +41,239 @@
         <!-- Stylesheets -->
         <link rel=stylesheet href="css/reset.css"/>
         <link rel=stylesheet href="css/styles.css"/>
+        <link href='http://fonts.googleapis.com/css?family=News+Cycle:400,700' rel='stylesheet' type='text/css'>
 
 
 
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
+
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+        <script>
+var markers = [];
+var markersDist = [];
+var pos;
+var directionsDisplay;
+            function getLocation() {
+
+                if (navigator.geolocation) {
+
+                    navigator.geolocation.getCurrentPosition(showPosition,showError);
+                    // DEV: showPosition(null);
+                }
+                else {
+
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+
+            function showPosition(position) {
+pos = new google.maps.LatLng(position.coords.latitude,
+                                               position.coords.longitude);
+
+ var infowindow = new google.maps.Marker({
+                map: map,
+                position: pos,
+                title: 'Usted está aquí'
+              });
+          
+
+              map.setCenter(pos);
+
+
+                var urlbase = "http://maps.googleapis.com/maps/api/geocode/json?latlng=";
+
+                var uri = position.coords.latitude+","+position.coords.longitude+"&sensor=false";
+                // DEV: var uri = (-33.3032128)+","+(-66.2956701)+"&sensor=false"
+
+                $.ajax({
+                    type: 'GET',
+                    async:false,
+                    dataType: 'json',
+                    url: urlbase+uri,
+                    success: function(data) {
+
+                        var direction = data.results[0]. formatted_address
+
+                        $("#coordinates").html(direction);
+                    }
+                });
+
+                //var img_url="http://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false";
+
+                //document.getElementById("mapholder").innerHTML="<img src='"+img_url+"'>";
+            }
+
+            function showError(error) {
+
+                alert(error);
+            }
+
+
+        var map;
+        function initialize() {
+            directionsDisplay = new google.maps.DirectionsRenderer();
+          var mapOptions = {
+            zoom: 15,
+            center: new google.maps.LatLng( -33.303, -66.295 ),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          map = new google.maps.Map(document.getElementById('map_canvas'),
+              mapOptions);
+
+        
+
+
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+var nearMarker;
+    function getCorridor(id){
+      deleteAllMarkers();
+var near ;
+              $.getJSON( 'http://api.ga.ulp.edu.ar/json/CorredorColeUrbana?jsoncallback=?', function(data) { 
+                $.each(data, function(i, item) {
+                  if(item.corredorId == id){
+
+                    var myLatlng = new google.maps.LatLng(item.latitud, item.longitud);
+                    var marker = new google.maps.Marker({
+                          position: myLatlng,
+                          map: map,
+                          title: item.parada,
+                          animation: google.maps.Animation.DROP,
+                        icon: 'http://www.marcellusgas.org/images/gmap/beachflag.png'
+
+                      });
+                      google.maps.event.addListener(marker, 'click', toggleBounce(marker));
+                       markers.push(marker);
+                       
+                       
+                       var aux2 = google.maps.geometry.spherical.computeDistanceBetween(marker.position, pos);
+                       if(!near || near > aux2){
+                        near = aux2;
+                        nearMarker = marker;
+                       }
+                  }
+
+                });
+                calcRoute(pos, nearMarker.position);
+              });
+
+    };
+
+    function toggleBounce(marker) {
+
+  if (marker.getAnimation() != null) {
+    marker.setAnimation(null);
+  } else {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+}
+
+            $(document).ready(function(){
+                $("#selectCorr").change(function() {
+                   getCorridor($(this).val());
+                });
+
+                getLocation();
+            });
+
+function deleteAllMarkers() {
+                               $.each(markers, function(index) {
+                                       deleteMarker(markers[index])
+                               });
+                       }
+                       
+                       function deleteMarker(marker) {
+                               marker.setMap(null); 
+                       }
+
+
+var directionsService = new google.maps.DirectionsService();
+function calcRoute(a,b) {
+  var request = {
+      origin: a,
+      destination: b,
+      // Note that Javascript allows us to access the constant
+      // using square brackets and a string value as its
+      // "property."
+      travelMode: google.maps.TravelMode.WALKING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+}
+
+
+        </script>
     </head>
     <body>
        
         <main>
             <section class="where">
                 <p>Estás en:</p>
-                <h1>Bvar Tobar Garcia y Calle 8</h1>
+                <h1 id="coordinates"></h1>
             </section>
 
             <section class="corridors">
                 <h1>¿Qué recorrido vas a tomar?</h1>
                   <select id="selectCorr">
-                      <option value="1">Balde - San Luis</option>
-                      <option value="2">San Luis - Balde</option>
-                      <option value="3">San Luis - Desaguadero</option>
-                      <option value="4">Desaguadero - San Luis</option>
-                  </select>
+                      <select id="selectCorr">
+                        <option value="-1">Elige el recorrido</option>
+                         <option value="1">Balde - San Luis</option>
+                         <option value="2">San Luis - Balde</option>
+                         <option value="3">San Luis - Desaguadero</option>
+                         <option value="4">Desaguadero - San Luis</option>
+                         <option value="5">Bagual - Buena Esperanza</option>
+                         <option value="6">Buena Esperanza - Bagual</option>
+                         <option value="7">San Luis - La Punta</option>
+                         <option value="8">La Punta - San Luis</option>
+                         <option value="9">San Luis - Union</option>
+                         <option value="10">Unión - San Luis</option>
+                         <option value="11">Union - Va Mercedes</option>
+                         <option value="12">Va Mercedes - Union</option>
+                         <option value="14">Villa Mercedes - Juan LLerena</option>
+                         <option value="15">Juan Llerena - Villa Mercedes</option>
+                         <option value="17">San Luis Terminal - Terrazas del Portezuelo</option>
+                         <option value="18">San Luis - La Punta por Ruta 3</option>
+                         <option value="19">San Luis - La Punta ULP por Ruta 3</option>
+                         <option value="20">Merlo - Papagayos por Ruta 1</option>
+                         <option value="21">San Luis - Candelaria</option>
+                         <option value="22">San Luis - La Punta por R146 (vuelve: J. Daract)</option>
+                         <option value="24">Merlo - Santa Rosa del Conlara</option>
+                         <option value="25">San Luis - La Punta por R146 (vuelve: Bolivar)</option>
+                         <option value="26">Merlo - Villa Mercedes</option>
+                         <option value="27">San Luis - Merlo</option>
+                         <option value="28">San Luis - Juana Koslay (Servicio Rápido)</option>
+                         <option value="29">San Luis - Villa de la Quebrada</option>
+                         <option value="30">Villa de La Quebrada-Rectorado UNSL(SL)</option>
+                         <option value="31">La Punta - Villa de La Quebrada</option>
+                         <option value="32">Villa de La Quebrada - La Punta</option>
+                         <option value="33">San Luis - Potrero de los Funes</option>
+                         <option value="34">Potrero de Los Funes - San Luis</option>
+                         <option value="35">San Luis - San Roque - Las Chacras</option>
+                         <option value="36">San Luis - El Volcan</option>
+                         <option value="37">San Luis - Peaje</option>
+                         <option value="39">San Luis - Trapiche - La Florida</option>
+                         <option value="40">San Luis - La Carolina - Intihuasi</option>
+                         <option value="41">La Punta - San Luis</option>
+                         <option value="42">San Luis - La Calera</option>
+                         <option value="43">San Luis - Balde</option>
+                     </select>
             </section>
             <div id="map_canvas" style="width:100%; height:100%"></div>
         </main>
-        <script type="text/javascript">
-        function createPoint(parada, latitud, longitud) {
-            $('#map_canvas').gmap('addMarker', { 
+
+       
+<div id="map_canvas" style="width:100%; height:100%"></div>
                   'position': new google.maps.LatLng(latitud, longitud), 
                   'bounds': true 
                 }).click(function() {
