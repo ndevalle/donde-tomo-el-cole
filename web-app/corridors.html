@@ -68,10 +68,22 @@ var markers = [];
             }
 
             function showPosition(position) {
+var pos = new google.maps.LatLng(position.coords.latitude,
+                                               position.coords.longitude);
 
-                var urlbase = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+ var infowindow = new google.maps.InfoWindow({
+                map: map,
+                position: pos,
+                content: 'Usted está aquí'
+              });
+          
 
-                var uri = position.coords.latitude+","+position.coords.longitude+"&sensor=false"
+              map.setCenter(pos);
+
+
+                var urlbase = "http://maps.googleapis.com/maps/api/geocode/json?latlng=";
+
+                var uri = position.coords.latitude+","+position.coords.longitude+"&sensor=false";
                 // DEV: var uri = (-33.3032128)+","+(-66.2956701)+"&sensor=false"
 
                 $.ajax({
@@ -108,26 +120,7 @@ var markers = [];
           map = new google.maps.Map(document.getElementById('map_canvas'),
               mapOptions);
 
-          // Try HTML5 geolocation
-          if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-              var pos = new google.maps.LatLng(position.coords.latitude,
-                                               position.coords.longitude);
-
-              var infowindow = new google.maps.InfoWindow({
-                map: map,
-                position: pos,
-                content: 'Location found using HTML5.'
-              });
-          
-
-              map.setCenter(pos);
-            }, function() {
-            alert("Geolocation is not supported by this browser.");
-            });
-          } else {
-            alert("Geolocation is not supported by this browser.");
-          }
+        
 
 
         }
