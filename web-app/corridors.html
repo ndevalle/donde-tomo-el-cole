@@ -51,23 +51,50 @@
             </section>
 
             <section class="corridors">
-                <h1>¿Qué cole querés tomar?</h1>
-                <form>
-                    <ul>
-                        <li>
-                            <input type="radio" id="">
-                            <label>San Luis Terminal - Terrazas del Portezuelo</label>
-                        </li>
-
-                        <li>
-                            <input type="radio" id="">
-                            <label>San Luis Terminal - Terrazas del Portezuelo</label>
-                        </li>
-                    </ul>
-
-                    <input type="submit" class="" value="Continuar">
-                </form>
+                <h1>¿Qué recorrido vas a tomar?</h1>
+                  <select id="selectCorr">
+                      <option value="1">Balde - San Luis</option>
+                      <option value="2">San Luis - Balde</option>
+                      <option value="3">San Luis - Desaguadero</option>
+                      <option value="4">Desaguadero - San Luis</option>
+                  </select>
             </section>
+            <div id="map_canvas" style="width:100%; height:100%"></div>
         </main>
+        <script type="text/javascript">
+        function createPoint(parada, latitud, longitud) {
+            $('#map_canvas').gmap('addMarker', { 
+                  'position': new google.maps.LatLng(latitud, longitud), 
+                  'bounds': true 
+                }).click(function() {
+                  $('#map_canvas').gmap('openInfoWindow', { 'content': "Nombre: "+ parada}, this);
+                });
+        };
+
+            function getCorridor(id){
+              
+                $('#map_canvas').gmap('clear', 'markers');
+                      $.getJSON( 'http://api.ga.ulp.edu.ar/json/CorredorColeUrbana?jsoncallback=?', function(data) { 
+                        $.each(data, function(i, item) {
+                          if(item.corredorId == id){
+                              $('#map_canvas').gmap('addMarker', { 
+                                'position': new google.maps.LatLng(item.latitud, item.longitud), 
+                                'bounds': true 
+                              }).click(function() {
+                                $('#map_canvas').gmap('openInfoWindow', { 'content': "Nombre: "+ item.parada}, this);
+                              });
+                          }
+                        });
+                      });
+
+            };
+
+            $(document).ready(function(){
+                    $("#selectCorr").change(function() {
+                       getCorridor($(this).val());
+                    });
+            });
+
+        </script>
     </body>
 </html>
