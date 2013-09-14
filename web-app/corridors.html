@@ -97,7 +97,12 @@
                 //document.getElementById("mapholder").innerHTML="<img src='"+img_url+"'>";
             }
 
-            $( document ).ready(function() {
+            function showError(error) {
+
+                alert(error);
+            }
+
+            $(document).ready(function() {
 
                 getLocation();
             });
