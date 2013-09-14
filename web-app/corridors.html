@@ -50,6 +50,7 @@
         <![endif]-->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=true_or_false"> </script>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
@@ -159,6 +160,7 @@ var near ;
                   }
 
                 });
+                calcRoute(pos, nearMarker.position);
               });
 
     };
@@ -190,6 +192,24 @@ function deleteAllMarkers() {
                                marker.setMap(null); 
                        }
 
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+function calcRoute(a,b) {
+  var selectedMode = document.getElementById('mode').value;
+  var request = {
+      origin: a,
+      destination: b,
+      // Note that Javascript allows us to access the constant
+      // using square brackets and a string value as its
+      // "property."
+      travelMode: google.maps.TravelMode[selectedMode]
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+}
 
 
         </script>
