@@ -55,6 +55,8 @@
 
         <script>
 var markers = [];
+var markersDist = [];
+var pos;
             function getLocation() {
 
                 if (navigator.geolocation) {
@@ -69,7 +71,7 @@ var markers = [];
             }
 
             function showPosition(position) {
-var pos = new google.maps.LatLng(position.coords.latitude,
+pos = new google.maps.LatLng(position.coords.latitude,
                                                position.coords.longitude);
 
  var infowindow = new google.maps.Marker({
@@ -128,9 +130,10 @@ var pos = new google.maps.LatLng(position.coords.latitude,
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
+var nearMarker;
     function getCorridor(id){
       deleteAllMarkers();
-
+var near ;
               $.getJSON( 'http://api.ga.ulp.edu.ar/json/CorredorColeUrbana?jsoncallback=?', function(data) { 
                 $.each(data, function(i, item) {
                   if(item.corredorId == id){
@@ -146,6 +149,13 @@ var pos = new google.maps.LatLng(position.coords.latitude,
                       });
                       google.maps.event.addListener(marker, 'click', toggleBounce(marker));
                        markers.push(marker);
+                       
+                       
+                       var aux2 = google.maps.geometry.spherical.computeDistanceBetween(marker.position, pos);
+                       if(!near || near > aux2){
+                        near = aux2;
+                        nearMarker = marker;
+                       }
                   }
 
                 });
