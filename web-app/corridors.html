@@ -49,6 +49,7 @@
         <![endif]-->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
         <script>
@@ -58,6 +59,7 @@ var markers = [];
                 if (navigator.geolocation) {
 
                     navigator.geolocation.getCurrentPosition(showPosition,showError);
+                    // DEV: showPosition(null);
                 }
                 else {
 
@@ -67,9 +69,23 @@ var markers = [];
 
             function showPosition(position) {
 
-                var latlon = "lat:"+position.coords.latitude+" - long:"+position.coords.longitude;
+                var urlbase = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
 
-                $("#coordinates").val(latlon);
+                var uri = position.coords.latitude+","+position.coords.longitude+"&sensor=false"
+                // DEV: var uri = (-33.3032128)+","+(-66.2956701)+"&sensor=false"
+
+                $.ajax({
+                    type: 'GET',
+                    async:false,
+                    dataType: 'json',
+                    url: urlbase+uri,
+                    success: function(data) {
+
+                        var direction = data.results[0]. formatted_address
+
+                        $("#coordinates").html(direction);
+                    }
+                });
 
                 //var img_url="http://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false";
 
@@ -154,13 +170,9 @@ var markers = [];
                 $("#selectCorr").change(function() {
                    getCorridor($(this).val());
                 });
+
+                getLocation();
             });
-
-
-                    $(document).ready(function() {
-
-                        getLocation();
-                    });
 
 function deleteAllMarkers() {
                                $.each(markers, function(index) {
