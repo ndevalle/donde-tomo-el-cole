@@ -46,11 +46,14 @@
         <![endif]-->
 
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> </script>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
         <script>
 var markers = [];
+var markersDist = [];
+var pos;
             function getLocation() {
 
                 if (navigator.geolocation) {
@@ -65,7 +68,7 @@ var markers = [];
             }
 
             function showPosition(position) {
-var pos = new google.maps.LatLng(position.coords.latitude,
+pos = new google.maps.LatLng(position.coords.latitude,
                                                position.coords.longitude);
 
  var infowindow = new google.maps.Marker({
@@ -124,9 +127,10 @@ var pos = new google.maps.LatLng(position.coords.latitude,
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
+var nearMarker;
     function getCorridor(id){
       deleteAllMarkers();
-
+var near ;
               $.getJSON( 'http://api.ga.ulp.edu.ar/json/CorredorColeUrbana?jsoncallback=?', function(data) { 
                 $.each(data, function(i, item) {
                   if(item.corredorId == id){
@@ -142,9 +146,17 @@ var pos = new google.maps.LatLng(position.coords.latitude,
                       });
                       google.maps.event.addListener(marker, 'click', toggleBounce(marker));
                        markers.push(marker);
+                       
+                       
+                       var aux2 = google.maps.geometry.spherical.computeDistanceBetween(marker.position, pos);
+                       if(!near || near > aux2){
+                        near = aux2;
+                        nearMarker = marker;
+                       }
                   }
 
                 });
+                calcRoute(pos, nearMarker.position);
               });
 
     };
@@ -176,6 +188,23 @@ function deleteAllMarkers() {
                                marker.setMap(null); 
                        }
 
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+function calcRoute(a,b) {
+  var request = {
+      origin: a,
+      destination: b,
+      // Note that Javascript allows us to access the constant
+      // using square brackets and a string value as its
+      // "property."
+      travelMode: google.maps.TravelMode.WALKING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+}
 
 
         </script>
