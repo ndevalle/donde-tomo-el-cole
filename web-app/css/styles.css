@@ -1,0 +1,58 @@
+body {
+	min-width: 280px;
+	max-width: 100%;
+	padding: 0 10px;
+	line-height: 1;
+}
+
+/* buttons */
+[class*="btn"],
+[class*="btn"]:focus {
+	font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
+	-webkit-border-radius: 4px; /* Android 2.1 */
+	border-radius: 4px;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	cursor: pointer;
+	display: inline-block;
+	font-family: Arial, Helvetica, sans-serif;
+	height: auto;
+	text-decoration: none;
+	font-size: 18px;
+}
+
+/* Big */
+.btn-big,
+.btn-big:focus {
+	font-size: 20px;
+	text-align: center;
+}
+
+/* actions */
+.action {
+	margin-top: 20px;
+}
+
+
+.main-header {
+	min-height: 70px;
+	padding: 10px 10px 10px 70px;
+}
+
+.main-header h1 {
+	font-size: 36px;
+}
+
+.description {
+	text-align: center;
+}
+
+.description h2 {
+	font-size: 28px;
+}
+
+.description h2 span {
+	display: block;
+	margin-top: 20px;
+}
+
