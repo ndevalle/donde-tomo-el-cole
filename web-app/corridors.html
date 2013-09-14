@@ -52,7 +52,7 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
         <script>
-
+var markers = [];
             function getLocation() {
 
                 if (navigator.geolocation) {
@@ -85,32 +85,33 @@
         var map;
         function initialize() {
           var mapOptions = {
-            zoom: 8,
-            center: new google.maps.LatLng(-34.397, 150.644),
+            zoom: 10,
+            center: new google.maps.LatLng( -33.303, -66.295 ),
             mapTypeId: google.maps.MapTypeId.ROADMAP
           };
           map = new google.maps.Map(document.getElementById('map_canvas'),
               mapOptions);
 
-  // Try HTML5 geolocation
-  if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = new google.maps.LatLng(position.coords.latitude,
-                                       position.coords.longitude);
+          // Try HTML5 geolocation
+          if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              var pos = new google.maps.LatLng(position.coords.latitude,
+                                               position.coords.longitude);
 
-      var infowindow = new google.maps.InfoWindow({
-        map: map,
-        position: pos,
-        content: 'Location found using HTML5.'
-      });
+              var infowindow = new google.maps.InfoWindow({
+                map: map,
+                position: pos,
+                content: 'Location found using HTML5.'
+              });
+          
 
-      map.setCenter(pos);
-    }, function() {
-    alert("Geolocation is not supported by this browser.");
-    });
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
+              map.setCenter(pos);
+            }, function() {
+            alert("Geolocation is not supported by this browser.");
+            });
+          } else {
+            alert("Geolocation is not supported by this browser.");
+          }
 
 
         }
@@ -118,7 +119,7 @@
         google.maps.event.addDomListener(window, 'load', initialize);
 
     function getCorridor(id){
-      
+      deleteAllMarkers();
 
               $.getJSON( 'http://api.ga.ulp.edu.ar/json/CorredorColeUrbana?jsoncallback=?', function(data) { 
                 $.each(data, function(i, item) {
@@ -128,14 +129,26 @@
                     var marker = new google.maps.Marker({
                           position: myLatlng,
                           map: map,
-                          title: item.parada
+                          title: item.parada,
+                          animation: google.maps.Animation.DROP
                       });
-                     
+                      google.maps.event.addListener(marker, 'click', toggleBounce);
+                       markers.push(marker);
                   }
+
                 });
               });
 
     };
+
+    function toggleBounce() {
+
+  if (marker.getAnimation() != null) {
+    marker.setAnimation(null);
+  } else {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+  }
+}
 
             $(document).ready(function(){
                 $("#selectCorr").change(function() {
@@ -148,6 +161,18 @@
 
                         getLocation();
                     });
+
+function deleteAllMarkers() {
+                               $.each(markers, function(index) {
+                                       deleteMarker(markers[index])
+                               });
+                       }
+                       
+                       function deleteMarker(marker) {
+                               marker.setMap(null); 
+                       }
+
+
 
         </script>
     </head>
@@ -163,6 +188,7 @@
                 <h1>¿Qué cole querés tomar?</h1>
                 <form>
                       <select id="selectCorr">
+                        <option value="-1">Elige</option>
                          <option value="1">Balde - San Luis</option>
                          <option value="2">San Luis - Balde</option>
                          <option value="3">San Luis - Desaguadero</option>
