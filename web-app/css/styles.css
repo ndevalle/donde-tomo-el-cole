@@ -118,3 +118,11 @@ body {
 	width: 100%;
 	font-size: 18px;
 }
+
+footer {
+	margin-top: 50px;
+}
+
+footer p {
+	margin: 5px;
+}
