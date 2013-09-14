@@ -1,7 +1,7 @@
 body {
 	min-width: 280px;
 	max-width: 100%;
-	padding: 0 10px;
+	padding: 0;
 	line-height: 1;
 	font-family: 'News Cycle', sans-serif;
 	background: #fafafa;
@@ -26,7 +26,8 @@ body {
 
 
 .btn,
-.btn:visited{
+.btn:visited,
+.btn:hover{
 	background-color: #27B3CA;
 	background-image: -webkit-linear-gradient(#3EC1DB, #2098AD);
 	background-image: -moz-linear-gradient(#3EC1DB, #2098AD);
@@ -37,6 +38,7 @@ body {
 	border: 1px solid #2098AD;
 	color: #FFFFFF;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
+	text-decoration: none;
 }
 /* Big */
 .btn-big,
@@ -84,3 +86,33 @@ body {
 	font-weight: normal;
 }
 
+
+/* corridors */
+
+.where {
+	background: #3EC1DB;
+	padding: 10px;
+	color: #fff;
+}
+
+.where p {
+	font-size: 16px;
+}
+
+.where h1 {
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.corridors {
+	text-align: center;
+	padding: 0 10px;
+	border-top: 1px solid #ccc;
+}
+
+.corridors h1 {
+	
+}
+.corridors select {
+	margin: 10px 0;
+}
