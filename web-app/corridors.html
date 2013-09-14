@@ -74,8 +74,7 @@ var pos = new google.maps.LatLng(position.coords.latitude,
  var infowindow = new google.maps.Marker({
                 map: map,
                 position: pos,
-                title: 'Usted está aquí',
-                color: "#3EC1DB"
+                title: 'Usted está aquí'
               });
           
 
@@ -140,7 +139,9 @@ var pos = new google.maps.LatLng(position.coords.latitude,
                           position: myLatlng,
                           map: map,
                           title: item.parada,
-                          animation: google.maps.Animation.DROP
+                          animation: google.maps.Animation.DROP,
+                        icon: 'http://www.marcellusgas.org/images/gmap/beachflag.png'
+
                       });
                       google.maps.event.addListener(marker, 'click', toggleBounce(marker));
                        markers.push(marker);
