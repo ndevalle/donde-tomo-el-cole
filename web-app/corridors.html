@@ -71,10 +71,11 @@ var markers = [];
 var pos = new google.maps.LatLng(position.coords.latitude,
                                                position.coords.longitude);
 
- var infowindow = new google.maps.InfoWindow({
+ var infowindow = new google.maps.Marker({
                 map: map,
                 position: pos,
-                content: 'Usted está aquí'
+                title: 'Usted está aquí',
+                color: "#FF0000"
               });
           
 
@@ -141,7 +142,7 @@ var pos = new google.maps.LatLng(position.coords.latitude,
                           title: item.parada,
                           animation: google.maps.Animation.DROP
                       });
-                      google.maps.event.addListener(marker, 'click', toggleBounce);
+                      google.maps.event.addListener(marker, 'click', toggleBounce(marker));
                        markers.push(marker);
                   }
 
@@ -150,7 +151,7 @@ var pos = new google.maps.LatLng(position.coords.latitude,
 
     };
 
-    function toggleBounce() {
+    function toggleBounce(marker) {
 
   if (marker.getAnimation() != null) {
     marker.setAnimation(null);
