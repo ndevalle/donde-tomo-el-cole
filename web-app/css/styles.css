@@ -25,7 +25,8 @@ body {
 
 
 
-.btn{
+.btn,
+.btn:visited{
 	background-color: #27B3CA;
 	background-image: -webkit-linear-gradient(#3EC1DB, #2098AD);
 	background-image: -moz-linear-gradient(#3EC1DB, #2098AD);
@@ -42,7 +43,7 @@ body {
 .btn-big:focus {
 	font-size: 30px;
 	text-align: center;
-	padding: 5px 20px;
+	padding: 10px 20px;
 }
 
 /* home */
